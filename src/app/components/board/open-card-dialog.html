@@ -1,0 +1,31 @@
+<div (click)="onNoClick({cardId: data.cardId, lock: data.wsId, unlock: data.unlock})"><fa-icon class="close-button" (click)="onNoClick({cardId: data.cardId, lock: data.wsId, unlock: data.unlock})" [icon]="faTimes"></fa-icon></div>
+<h1 mat-dialog-title>{{data.label}}</h1>
+
+<div mat-dialog-content>
+  <mat-card class="lock-card" *ngIf="!data.unlock">Card locked by {{data.wsId}}</mat-card>
+  <div class="row">
+    <mat-form-field class="title">
+      <mat-label>Título</mat-label>
+      <input class="title-input" matInput [(ngModel)]="board['data']['cards'][data.cardId]['text']" (focusout)="saveField(data, 'text')" [disabled] = "data.unlock ? false : true" #title>
+    </mat-form-field>
+  </div>
+  <div class="row">
+    <mat-form-field class="description">
+      <mat-label>Descripción</mat-label>
+      <textarea matInput
+                cdkTextareaAutosize
+                #autosize="cdkTextareaAutosize"
+                cdkAutosizeMinRows="1"
+                cdkAutosizeMaxRows="10"
+                [(ngModel)]="board['data']['cards'][data.cardId]['description']"
+                (focusout)="saveField(data, 'description')"
+                [disabled] = "data.unlock ? false : true"></textarea>
+    </mat-form-field>
+  </div>
+</div>
+<div class="spacer"></div>
+<div class="row" *ngIf="data.unlock">
+  <button class="delete-button" mat-flat-button color="warn" (click)="deleteCard(data)">Eliminar tarjeta</button>
+</div>
+
+

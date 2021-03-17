@@ -1,0 +1,42 @@
+body {
+    background-image: url('../../../assets/images/blue.jpg');
+    background-position: center;
+    color: white;
+}
+
+.container {
+    text-align: center;
+}
+
+.title {
+    padding-top: 15em;
+    padding-bottom: 5em;
+}
+
+.title h1 {
+    font-size: 4em;
+}
+
+.message {
+    font-size: 2em;
+    font-weight: 500;
+}
+
+.login {
+    padding-top: 2em;
+    padding-bottom: 2em;
+}
+
+.timeout {
+    color: orange;
+}
+
+.new-board-button {
+    margin-bottom: 1em;
+}
+
+::ng-deep .mat-form-field-appearance-fill .mat-form-field-flex {
+    background: white !important;
+    color: white !important;
+    background-color: white !important;
+}

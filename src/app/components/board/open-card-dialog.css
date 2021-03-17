@@ -1,0 +1,30 @@
+.title-input {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.description {
+    width: -webkit-fill-available;
+}
+
+.close-button{
+    float: right;
+    color: darkgrey;
+    font-size: 1.5em;
+}
+
+.close-button:hover{
+    color: black;
+}
+
+.delete-button{
+    float: right;
+    margin-top: 10em;
+}
+
+.lock-card {
+    color: white;
+    background: tomato;
+    margin-bottom: 1em;
+}

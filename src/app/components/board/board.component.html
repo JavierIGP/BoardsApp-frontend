@@ -1,0 +1,85 @@
+<div *ngIf="loaded; else loadingContent" class="board">
+    <div *ngIf="socketState; else socketClosed">
+        <mat-toolbar class="fixed-toolbar" color="primary" #toolbar>
+            <mat-form-field class="board-name" appearance="standard">
+                <input #name matInput value="{{board.name}}" (focusout)="updateBoardName(name.value)">
+            </mat-form-field>
+            <button class="invite-button" mat-button color="basic" [mdePopoverTriggerFor]="activeUsersPopover" [mdePopoverTargetAt]="activeUsersButton" mdePopoverTriggerOn="click" #activeUsersButton><fa-icon [icon]="faUser" style="color: white !important;"></fa-icon>&nbsp; Active Users: {{onlineUsers.length}}</button>
+            <button class="invite-button" mat-flat-button color="basic" [mdePopoverTriggerFor]="invitePopover" [mdePopoverTargetAt]="inviteUserButton" mdePopoverTriggerOn="click" #inviteUserButton>Invite &nbsp; <fa-icon [icon]="faUserPlus"></fa-icon></button>
+        </mat-toolbar>
+        <mde-popover #activeUsersPopover="mdePopover" [mdePopoverOverlapTrigger]="false" [mdePopoverCloseOnClick]="false" [mdePopoverOffsetX]="-25" [mdePopoverOffsetY]="0" [mdePopoverArrowOffsetX]="110" mdePopoverArrowColor="#FFFFFF">
+            <div class="user-list-container">
+                <mat-list role="user-list">
+                    <mat-list-item role="user-listitem" *ngFor="let userEmail of onlineUsers">{{userEmail}} &nbsp; <span class="dot" [ngClass]="getUserColor(userEmail)" [ngStyle]="{'background-image': 'url(' + getUserImage(userEmail) + ')'}"></span></mat-list-item>
+                </mat-list>
+            </div>
+        </mde-popover>
+        <mde-popover #invitePopover="mdePopover" [mdePopoverOverlapTrigger]="false" [mdePopoverCloseOnClick]="false" [mdePopoverOffsetX]="-16" [mdePopoverOffsetY]="0" [mdePopoverArrowOffsetX]="58" mdePopoverArrowColor="#FFFFFF">
+            <div class="invite-container" style="background-color: white;">
+                <form class="user-invite" (ngSubmit)="addUser(addUserForm)" #addUserForm>
+                    <div class="row" style="display: flex;">
+                        <div class="col">
+                            <mat-form-field class="email-input">
+                                <mat-label>Email</mat-label>
+                                <input id="user-input" type="email" [formControl]="email" matInput placeholder="example@domain.com">
+                                <mat-error *ngIf="email.invalid">{{getErrorMessage()}}</mat-error>
+                            </mat-form-field>
+                        </div>
+                        <div class="col">
+                            <button class="add-user-button" mat-flat-button color="primary" type="submit"><fa-icon style="color: white;" [icon]="faPlus"></fa-icon></button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </mde-popover>
+
+
+        <div [ngClass]="'grid-container'" [ngStyle]="{'grid-template-columns': layout['grid']['grid-template-columns']}">
+            <div *ngFor="let section of layout['categories']" class="section" [ngClass]="section['id']" 
+            [ngStyle]="{'grid-column-start': section['grid-column-start'],'grid-column-end': section['grid-column-end'], 'grid-row-start': section['grid-row-start'],'grid-row-end': section['grid-row-end'], 'min-height': section['min-height']}">
+                
+                <div style="display: flex;">
+                    <div style="width: -webkit-fill-available;"><label style="width: 100%;">{{section['label']}}</label></div>
+                <div style="text-align: right;">
+                    <fa-icon class="add-card" (click)="activateInput(section['id'], section['id'])" [icon]="faPlusCircle"></fa-icon>
+                </div>
+                </div>
+
+                <div class="wrapper">
+                    <div class="item-list" [dragula]="id" [(dragulaModel)]="board['data']['sections'][section['id']]" [ngClass]="section['id']">
+                        <div class="item-box" [ngClass]="getUserColor(cardsBlock[item])" [class.locked]="cardsBlock[item] !== undefined" [matTooltip]="cardsBlock[item] !== undefined ? 'Locked' : ''" *ngFor="let item of board['data']['sections'][section['id']]" title={{item}}>
+                            <div class="item-text">{{board['data']['cards'][item].text}}  &nbsp;</div>
+                            <fa-icon class="edit-button" [icon]="faEdit" (click)="openItemDialog(section['id'], item, section['label'])"></fa-icon>
+                        </div>
+                    </div>
+                    <div *ngIf="inputFlag[section['id']]">
+                        <form (submit)="addCard(section['id'], text.value, newCard)" action="#" #newCard>
+                            <mat-form-field appearance="legacy">
+                                <input matInputformControlName="text" matInput placeholder="Nueva tarjeta..." (focusout)="inputFlag[section['id']] = false" #text id="{{ 'input-' + section['id'] }}">
+                            </mat-form-field>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <ng-template #socketClosed>
+        <div class="page-wrapper">
+            <div class="row">
+                <div class="circle-wrapper">
+                    <div class="error circle"></div>
+                    <div class="icon">
+                        <fa-icon style="color: white;" [icon]="faTimes"></fa-icon>
+                    </div>
+                </div>
+            </div>
+            <div class="row error-closed-message">
+                <h2>We are sorry! <br> Seems like you've lost your connection <br> Please refresh the page</h2>
+            </div>
+        </div>
+    </ng-template>
+</div>
+
+<ng-template #loadingContent>
+    <div class="loader"></div>
+</ng-template>
